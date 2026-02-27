@@ -38,74 +38,7 @@ __pycache__/
 # ==========================================
 # Ignore the raw EDGAR downloaded folders and CSVs
 data/
-*.csv
-*.txt
 
-# Ignore specific DEEPFIN generated structures
-simulation_tensor/
-simulation_tensor
-
-# ==========================================
-# 5. Machine Learning Models & Tensors
-# ==========================================
-# Ignore the compiled training matrices and Keras models
-*.npy
-*.npz
-*.h5
-*.keras
-*.pb
-saved_models/
-
-# ==========================================
-# 6. IDE & OS Specific Files
-# ==========================================
-.vscode/
-.idea/
-.DS_Store
-Thumbs.db
-
-# ==========================================
-# 1. C++ & CMake Build Files
-# ==========================================
-build/
-out/
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-Makefile
-cmake_install.cmake
-install_manifest.txt
-compile_commands.json
-
-# ==========================================
-# 2. Compiled Pybind11 Extensions
-# ==========================================
-# (These change depending on your OS, so never commit them)
-*.so
-*.pyd
-*.dylib
-*.o
-*.obj
-
-# ==========================================
-# 3. Python Virtual Environment & Cache
-# ==========================================
-.venv/
-venv/
-env/
-__pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
-.pytest_cache/
-
-# ==========================================
-# 4. SEC Data & Simulation Outputs
-# ==========================================
-# Ignore the raw EDGAR downloaded folders and CSVs
-data/
-*.csv
-*.txt
 
 # Ignore specific DEEPFIN generated structures
 simulation_tensor/
