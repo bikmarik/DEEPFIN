@@ -1,19 +1,65 @@
-CMakeLists.txt.user
+# ==========================================
+# 1. C++ & CMake Build Files
+# ==========================================
+build/
+out/
 CMakeCache.txt
-CMakeFiles
-CMakeScripts
-Testing
+CMakeFiles/
+CMakeScripts/
 Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
-CTestTestfile.cmake
-_deps
-CMakeUserPresets.json
 
-# CLion
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#cmake-build-*
+# ==========================================
+# 2. Compiled Pybind11 Extensions
+# ==========================================
+# (These change depending on your OS, so never commit them)
+*.so
+*.pyd
+*.dylib
+*.o
+*.obj
+
+# ==========================================
+# 3. Python Virtual Environment & Cache
+# ==========================================
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+
+# ==========================================
+# 4. SEC Data & Simulation Outputs
+# ==========================================
+# Ignore the raw EDGAR downloaded folders and CSVs
+data/
+*.csv
+*.txt
+
+# Ignore specific DEEPFIN generated structures
+simulation_tensor/
+simulation_tensor
+
+# ==========================================
+# 5. Machine Learning Models & Tensors
+# ==========================================
+# Ignore the compiled training matrices and Keras models
+*.npy
+*.npz
+*.h5
+*.keras
+*.pb
+saved_models/
+
+# ==========================================
+# 6. IDE & OS Specific Files
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
