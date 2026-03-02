@@ -62,3 +62,8 @@ saved_models/
 .idea/
 .DS_Store
 Thumbs.db
+
+# ==========================================
+# 7. Logs and Misc
+# ==========================================
+training_loss.png

@@ -3,10 +3,11 @@ import calculate_data
 import yfinance as yf
 
 class FinancialProcessor:
-    def __init__(self, year, ticker):
+    def __init__(self, ticker, year):
         self.engine = calculate_data.DataCalculator()
-        self.year = year
         self.ticker = ticker
+        self.year = year
+        self.path = f"data/{ticker}/{year}"
 
     def get_value(self, df, concept_name):
         """
@@ -31,11 +32,11 @@ class FinancialProcessor:
             return 0.0, 0.0
 
     def process_ticker(self):
-        path = f"data/{self.year}/{self.ticker}"
+        
         try:
-            bs_df = pd.read_csv(f"{path}/balance_sheet.csv")
-            is_df = pd.read_csv(f"{path}/income_statement.csv")
-            cf_df = pd.read_csv(f"{path}/cashflow.csv")
+            bs_df = pd.read_csv(f"{self.path}/balance_sheet.csv")
+            is_df = pd.read_csv(f"{self.path}/income_statement.csv")
+            cf_df = pd.read_csv(f"{self.path}/cashflow.csv")
 
 
             # 1. BALANCE SHEET (Robust Extraction)
@@ -55,7 +56,6 @@ class FinancialProcessor:
             # 2. INCOME STATEMENT (Robust Revenue)
             rev_curr, rev_prev = self.get_value(is_df, "us-gaap_Revenues")
             if rev_curr == 0:
-                # Fallback for Service/Retail (Amazon uses this)
                 rev_curr, rev_prev = self.get_value(is_df, "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax")
             op_inc, _ = self.get_value(is_df, "us-gaap_OperatingIncomeLoss")
             net_inc, _ = self.get_value(is_df, "us-gaap_NetIncomeLoss")
@@ -65,7 +65,6 @@ class FinancialProcessor:
             sga, _ = self.get_value(is_df, "us-gaap_SellingGeneralAndAdministrativeExpense")
             sga, _ = self.get_value(is_df, "us-gaap_SellingGeneralAndAdministrativeExpense")
             if sga == 0:
-                # Tech companies split this into two separate line items
                 marketing, _ = self.get_value(is_df, "us-gaap_SellingAndMarketingExpense")
                 admin, _ = self.get_value(is_df, "us-gaap_GeneralAndAdministrativeExpense")
                 sga = marketing + admin
@@ -75,7 +74,6 @@ class FinancialProcessor:
             # 3. CASH FLOW
             ocf, _ = self.get_value(cf_df, "us-gaap_NetCashProvidedByUsedInOperatingActivities")
             capex, _ = self.get_value(cf_df, "us-gaap_PaymentsToAcquirePropertyPlantAndEquipment")
-            # If 0, fallback to the Productive Assets tag (Amazon, etc.)
             if capex == 0:
                 capex, _ = self.get_value(cf_df, "us-gaap_PaymentsToAcquireProductiveAssets")
             capex = abs(capex)
@@ -101,18 +99,13 @@ class FinancialProcessor:
                 "CashFlowOps": ocf,
                 "MarketCap": yf.Ticker(self.ticker).info.get("marketCap", 2000000000000.0) 
             }
-
-
-            # 5. RUN C++ ENGINE
-            feature_tensor = self.engine.get_feature_tensor(raw_data)
-            z_score = self.engine.calculate_full_z_score(raw_data)
-            solvency = self.engine.calculate_solvency_ratio(raw_data)
-            simulation_tensor = self.engine.get_simulation_tensor(raw_data)
+            z_score = self.engine.calculate_z_score(raw_data)
+            tensor = self.engine.get_tensor(raw_data)
             return {
                 "ticker": self.ticker,
                 "z_score": z_score,
-                "feature_tensor": feature_tensor,
-                "simulation_tensor": simulation_tensor,
+                "tensor": tensor,
+                "raw_data": raw_data
             }
 
         except Exception as e:

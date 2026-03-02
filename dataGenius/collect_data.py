@@ -8,7 +8,7 @@ edgar.set_identity("Marat Bikbaev bikbaevmarik55555@gmail.com")
 class DataCollector:
     def __init__(self, ticker, year):
         self.ticker = ticker
-        self.data_path = f"data/{year}/{ticker}"
+        self.data_path = f"data/{ticker}/{year}"
         if os.path.exists(self.data_path):
             print(f"  [+] Data for {ticker} {year} already exists. Skipping collection.")
             self.financials = None
@@ -55,8 +55,3 @@ class DataCollector:
         except Exception as e:
             print(f"  [-] Error saving {self.ticker}: {e}")
             return False
-        
-    def transform_data(self):
-        # Placeholder for future data transformation logic
-
-        pass

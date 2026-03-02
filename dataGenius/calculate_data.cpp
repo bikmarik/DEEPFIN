@@ -39,9 +39,6 @@ public:
             return -1.0; // Error indicator for missing tags
         }
     }
-
-
-
     /**
      * PFAI PREDICTIVE DRIVERS
      * Calculating the "Drift" and "Volatility" of Revenue and Net Income
@@ -68,46 +65,43 @@ public:
     }
     }
 
-    // Unified Feature Extractor for Keras
-    std::vector<double> get_feature_tensor(std::map<std::string, double> raw_data) {
+    std::vector<double> get_tensor(const std::map<std::string, double>& data) {
         std::vector<double> tensor;
-        double z = calculate_full_z_score(raw_data);
-        auto pfai = calculate_pfai_drivers(raw_data["Revenue"], raw_data["PrevRevenue"], raw_data["NetIncome"]);
-        double solvency = calculate_solvency_ratio(raw_data);
-        tensor.push_back(z);                      // [0] Risk Constraint
-        tensor.push_back(pfai["rev_velocity"]);   // [1] Growth Driver
-        tensor.push_back(pfai["op_margin"]);      // [2] Efficiency Driver
-        tensor.push_back(solvency);               // [3] Solvency Driver
-        tensor.push_back(raw_data["MarketCap"]);  // [4] Scale Factor
-        return tensor;
+        
+        // --- GROUP A: THE KNOBS (Raw Dollars for Simulation) ---
+        tensor.push_back(data.at("Revenue"));        // [0] Top line
+        tensor.push_back(data.at("COGS"));           // [1] Production Costs (What-If knob 1)
+        tensor.push_back(data.at("SGA"));            // [2] Salaries/Admin (What-If knob 2)
+        tensor.push_back(data.at("RD"));             // [3] Innovation
+        tensor.push_back(data.at("CAPEX"));          // [4] Investment (What-If knob 3)
+        tensor.push_back(data.at("Inventory"));      // [5] Capacity
+        
+        // --- GROUP B: THE HEALTH (Ratios for Logic) ---
+        double z = calculate_full_z_score(data);
+        double solvency = calculate_solvency_ratio(data);
+        tensor.push_back(z);                         // [6] Risk Floor
+        tensor.push_back(solvency);                  // [7] Cash Safety
+        
+        // --- GROUP C: THE MOMENTUM (PFAI Drivers) ---
+        double prev_rev = data.at("PrevRevenue");
+        double velocity = (prev_rev != 0) ? (data.at("Revenue") - prev_rev) / std::abs(prev_rev) : 0.0;
+        double margin = (data.at("Revenue") > 0) ? data.at("NetIncome") / data.at("Revenue") : 0.0;
+        tensor.push_back(velocity);                  // [8] Speed of growth
+        tensor.push_back(margin);                    // [9] Profit efficiency
+        
+        // --- GROUP D: SCALE ---
+        tensor.push_back(data.at("MarketCap"));      // [10] Relative size
+        tensor.push_back(data.at("Assets"));         // [11] Total footprint
+
+        return tensor; 
     }
-    // Add these to your DataCalculator class in C++
-    std::vector<double> get_simulation_tensor(const std::map<std::string, double>& data) {
-        std::vector<double> tensor;
-        tensor.push_back(data.at("Revenue"));        // [0]
-        tensor.push_back(data.at("COGS"));           // [1] Production Costs
-        tensor.push_back(data.at("SGA"));            // [2] Salaries & Admin
-        tensor.push_back(data.at("RD"));             // [3] Innovation/R&D
-        tensor.push_back(data.at("Inventory"));      // [4] Production capacity indicator
-        tensor.push_back(data.at("CAPEX"));          // [5] The "Investment" input
         
-        // Efficiency Ratios (Helps the AI learn the relationship between cost and profit)
-        double prod_efficiency = (data.at("Revenue") > 0) ? data.at("COGS") / data.at("Revenue") : 0.0;
-        tensor.push_back(prod_efficiency);           // [6]
-        
-        // Traditional Health (Z-Score & Solvency)
-        tensor.push_back(calculate_full_z_score(data)); // [7]
-        
-        return tensor;
-    }
-    
 };
 
 PYBIND11_MODULE(calculate_data, m) {
     py::class_<DataCalculator>(m, "DataCalculator")
         .def(py::init<>())
-        .def("calculate_full_z_score", &DataCalculator::calculate_full_z_score)
+        .def("calculate_z_score", &DataCalculator::calculate_full_z_score)
         .def("calculate_solvency_ratio", &DataCalculator::calculate_solvency_ratio)
-        .def("get_feature_tensor", &DataCalculator::get_feature_tensor)
-        .def("get_simulation_tensor", &DataCalculator::get_simulation_tensor);
+        .def("get_tensor", &DataCalculator::get_tensor);
 }
