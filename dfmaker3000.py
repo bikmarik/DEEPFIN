@@ -1,6 +1,7 @@
 import numpy as np
 from dataGenius.process_data import FinancialProcessor
 from dataGenius.collect_data import DataCollector
+import edgar
 
 class DataFrameBuilder3000:
     def __init__(self, tickers, start_year, end_year):
@@ -48,6 +49,12 @@ if __name__ == "__main__":
     start_year = 2017
     end_year = 2025
     tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "META"]  # Example tickers - replace with actual S&P 500 list
+    print("Input Name (for SEC identity): ", end="")
+    Name = input()
+    print("Input Email (for SEC identity): ", end="")
+    Email = input()
+    print("Starting data collection and dataset building...")
+    edgar.set_identity(Name + " " + Email)  # Set identity for SEC access
     for ticker in tickers:
         print(f"Processing {ticker} from {start_year} to {end_year}...")
         for year in range(start_year, end_year + 1):
