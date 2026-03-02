@@ -2,8 +2,6 @@ import edgar
 import pandas as pd
 import os
 
-# Set identity - Required by SEC
-edgar.set_identity("Marat Bikbaev bikbaevmarik55555@gmail.com")
 
 class DataCollector:
     def __init__(self, ticker, year):
