@@ -1,4 +1,4 @@
-# DEEPFIN & QUANTIVESTA™ 📈
+# DEEPFIN & QUANTIVESTA™ 
 **A Prescriptive Financial Intelligence and Causal Simulation Engine**
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
@@ -29,7 +29,7 @@ By integrating a high-performance **C++ extraction engine** with a **Keras 3 Seq
 
 ---
 
-## ⚙️ Installation & Prerequisites
+## Installation & Prerequisites
 
 To build and run this project, you need a C++20 compiler and Python 3.10+.
 
@@ -37,3 +37,10 @@ To build and run this project, you need a C++20 compiler and Python 3.10+.
 ```bash
 git clone [https://github.com/yourusername/deepfin.git](https://github.com/yourusername/deepfin.git)
 cd deepfin
+```
+
+
+
+## TODO:
+1. **Synchronization with S&P500**
+2. **Train AI**
