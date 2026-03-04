@@ -36,7 +36,7 @@ To build and run this project, you need a C++20 compiler and Python 3.10+.
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/bikmarik/DEEPFIN.git
-cd deepfin
+cd DEEPFIN
 ```
 
 
