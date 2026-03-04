@@ -1,6 +1,6 @@
 import numpy as np
 from dataGenius.process_data import FinancialProcessor
-from dataGenius.collect_data import DataCollector
+from scripts.collect_data import DataCollector
 import edgar
 
 class DataFrameBuilder3000:

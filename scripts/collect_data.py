@@ -1,5 +1,4 @@
 import edgar
-import pandas as pd
 import os
 
 
