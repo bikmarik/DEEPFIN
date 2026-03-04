@@ -9,7 +9,6 @@ import matplotlib.pyplot as plt
 # ==========================================
 # 1. LOAD THE MODEL AND SCALER
 # ==========================================
-# Notice the updated paths pointing to your new folders!
 model = keras.models.load_model("weights/deepfin_v2.keras")
 scaler_mean = np.load("data/scaler_mean.npy")
 scaler_scale = np.load("data/scaler_scale.npy")
