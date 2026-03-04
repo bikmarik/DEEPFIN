@@ -3,8 +3,9 @@ os.environ["KERAS_BACKEND"] = "jax"
 
 import numpy as np
 import keras
-from dataGenius.process_data import FinancialProcessor
+from src.dataGenius.process_data import FinancialProcessor
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 # ==========================================
 # 1. LOAD THE MODEL AND SCALER
@@ -12,6 +13,7 @@ import matplotlib.pyplot as plt
 model = keras.models.load_model("weights/deepfin_v2.keras")
 scaler_mean = np.load("data/scaler_mean.npy")
 scaler_scale = np.load("data/scaler_scale.npy")
+os.makedirs("assets", exist_ok=True) 
 
 # ==========================================
 # 2. GATHER HISTORICAL (INPUT) AND ACTUAL FUTURE DATA
@@ -22,12 +24,12 @@ actual_future = []
 print("🔍 Extracting Apple's financial states via C++ Engine...")
 
 # T_in: 3 years of input sequence
-for year in [2019, 2020, 2021]:
+for year in tqdm([2019, 2020, 2021]):
     res = FinancialProcessor("AAPL", year).process_ticker()
     history.append(res['tensor'])
 
 # T_out: 3 years of actual realized data to compare against predictions
-for year in [2022, 2023, 2024]:
+for year in tqdm([2022, 2023, 2024]):
     res = FinancialProcessor("AAPL", year).process_ticker()
     actual_future.append(res['tensor'])
 
