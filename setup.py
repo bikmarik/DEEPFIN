@@ -4,7 +4,7 @@ from pybind11.setup_helpers import Pybind11Extension, build_ext
 ext_modules = [
     Pybind11Extension(
         "calculate_data",
-        ["dataGenius/calculate_data.cpp"],  # Path to your C++ file
+        ["src/dataGenius/calculate_data.cpp"],  # Path to your C++ file
     ),
 ]
 

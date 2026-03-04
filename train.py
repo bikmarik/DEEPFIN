@@ -1,5 +1,5 @@
 import os
-os.environ["KERAS_BACKEND"] = "tensorflow" # Or "jax" / "torch"
+os.environ["KERAS_BACKEND"] = "jax"
 
 import keras
 from keras import layers
@@ -8,8 +8,8 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 # 1. LOAD THE TRAINING DATA
-X = np.load("X_train.npy")
-Y = np.load("Y_train.npy") 
+X = np.load("data/X_train.npy")
+Y = np.load("data/Y_train.npy") 
 # 2. SCALING
 scaler = StandardScaler()
 X_flat = X.reshape(-1, X.shape[-1])
@@ -40,7 +40,7 @@ model.compile(optimizer="adamw", loss="mse", metrics=["mae"])
 model.summary()
 
 # 4. TRAIN
-print("🚀 Training DEEPFIN Intelligence...")
+print("Training DEEPFIN Intelligence...")
 history = model.fit(
     X_scaled, Y_scaled, 
     epochs=100, 
@@ -50,12 +50,12 @@ history = model.fit(
 )
 
 # 5. SAVE FOR SIMULATION
-model.save("deepfin_v1.keras")
-np.save("scaler_mean.npy", scaler.mean_)
-np.save("scaler_scale.npy", scaler.scale_)
+model.save("weights/deepfin_v2.keras")
+np.save("data/scaler_mean.npy", scaler.mean_)
+np.save("data/scaler_scale.npy", scaler.scale_)
 
 # 6. VISUALIZE TRAINING LOSS
 plt.plot(history.history['loss'], label='Loss')
 plt.title('DEEPFIN Model Convergence')
 plt.legend()
-plt.savefig('training_loss.png')
+plt.savefig('assets/training_loss.png')
